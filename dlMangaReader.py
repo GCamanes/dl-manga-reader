@@ -131,7 +131,7 @@ def downloadMangaChapterPage(path, chapter, chapterUrl, page, pageUrl):
 # Function to download a chapter from a manga
 # Return : void
 def downloadMangaChapter(path, manga, chapter, chapterUrl):
-	print "# DL : chapter", str(chapter), "..."
+	print "\n# DL : chapter", str(chapter), "...\n"
 
 	# Managing chapter folder creation
 	try :
@@ -147,20 +147,49 @@ def downloadMangaChapter(path, manga, chapter, chapterUrl):
 def downloadManga(manga):
 	print "## DL", manga, "..."
 
+	createMangaFolder(manga)
+	dico_chapters = getMangaChaptersDico(manga)
+
+	for chapter in sorted(dico_chapters):
+		downloadMangaChapter(PATH+"/"+manga, manga, chapter, dico_chapters[chapter])
+
+# Function to download only one specific chapter from a manga
+# Return : void
+def downloadOneChapter(manga, chapterNumber):
+	print "## DL", manga, "..."
+
+	createMangaFolder(manga)
+	chapter = getChapName(manga, chapterNumber)
+	dico_chapters = getMangaChaptersDico(manga)
+
+	if (chapter not in dico_chapters):
+		print "ERROR :", manga,"doesn't have a chapter", chapter
+		sys.exit()
+	else:
+		downloadMangaChapter(PATH+"/"+manga, manga, chapter, dico_chapters[chapter])
+
+# Function to download last chapters from a manga
+# Return : void
+def downloadLastChapters(manga, lastNumber):
+	print "## DL", manga, "..."
+
+	createMangaFolder(manga)
+	dico_chapters = getMangaChaptersDico(manga)
+
+	for chapter in sorted(dico_chapters)[-lastNumber:]:
+		downloadMangaChapter(PATH+"/"+manga, manga, chapter, dico_chapters[chapter])
+
+
+def createMangaFolder(manga):
 	if (manga not in DICO_MANGAS.keys()):
 		print "ERROR :", manga,"not in available mangas"
+		sys.exit()
 	else:
 		# Managing manga folder creation
 		try :
 			os.mkdir(PATH+"/"+manga)
-			print "# create a directory"
 		except :
-			print "# don't need to create a directory"
 			pass
-
-	dico_chapters = getMangaChaptersDico(manga)
-	for chapter in sorted(dico_chapters):
-		downloadMangaChapter(PATH+"/"+manga, manga, chapter, dico_chapters[chapter])
 
 # Function to run the python script
 def main():
@@ -188,16 +217,15 @@ def main():
 		if (args.chap == None and args.last == None):
 			print "downloading all chapters from", args.manga[0]
 			downloadManga(args.manga[0])
-			print 1
 
 		elif (args.chap != None):
-			#print "downloading chapter", args.chap[0], "from", args.manga[0]
-			#dlMangaChap(args.manga[0], args.chap[0])
-			print 2
+			print "downloading chapter", args.chap[0], "from", args.manga[0]
+			downloadOneChapter(args.manga[0], args.chap[0])
+
 		else:
-			#print "downloading the last", args.last[0], "chapter(s) from", args.manga[0]
-			#dlMangaLastChap(args.manga[0], args.last[0])
-			print 3
+			print "downloading the last", args.last[0], "chapter(s) from", args.manga[0]
+			downloadLastChapters(args.manga[0], args.last[0])
+
 	else:
 		print "/!\ No arguments"
 		parser.print_help()
