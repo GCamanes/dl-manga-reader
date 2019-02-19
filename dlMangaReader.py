@@ -194,19 +194,20 @@ def createMangaFolder(manga):
 # Function to run the python script
 def main():
 
-	print "** Welcome to dlMangaReader **"
-	print "... loading ..."
-	# Loading mangas list
-	getMangasDico()
-
 	# Definition of argument option
-	parser = argparse.ArgumentParser(prog="dlScans.py")
-	parser.add_argument('-s', '--show', nargs=1, help='list of all available mangas', action='store', type=str)
+	parser = argparse.ArgumentParser(prog="dlMangaReader.py")
+	parser.add_argument('-s', '--show', nargs=1, help='list of all available mangas that include a search pattern', action='store', type=str)
 	parser.add_argument('-m', '--manga', nargs=1, help='select a manga to download', action='store', type=str)
-	parser.add_argument('-c', '--chap', nargs=1, help='select a specific chapter to download', action='store', type=str)
-	parser.add_argument('-l', '--last', nargs=1, help='select a last X chapter to download', action='store', type=int)
+	parser.add_argument('-c', '--chap', nargs=1, help='select a specific chapter of a manga to download', action='store', type=str)
+	parser.add_argument('-l', '--last', nargs=1, help='select a last N chapter of a manga to download', action='store', type=int)
 	# Parsing of command line argument
 	args = parser.parse_args(sys.argv[1:])
+
+	print "** script dlMangaReader **"
+	print "   loading manga list ..."
+	# Loading mangas list
+	getMangasDico()
+	print "   manga list loaded"
 
 	if (args.show != None):
 		print "** List of all available mangas **"
